@@ -175,12 +175,12 @@ struct BrandWordmark: View {
     var body: some View {
         VStack(spacing: 6) {
             PawHeartLogo(size: logoSize)
-            Text("PetCare")
+            Text("Psh Psh")
                 .font(.system(size: fontSize, weight: .heavy, design: .rounded))
                 .foregroundStyle(Theme.primaryGradient)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("PetCare")
+        .accessibilityLabel("Psh Psh")
     }
 }
 

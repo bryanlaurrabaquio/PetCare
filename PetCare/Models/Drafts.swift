@@ -113,6 +113,23 @@ struct BookingDraft {
     var registersExpense = true
 }
 
+struct PolicyDraft {
+    var petID: UUID?
+    var companyID: String
+    var planID: String
+    var startDate: Date = Calendar.current.startOfDay(for: .now)
+    var paymentFrequency: PaymentFrequency = .monthly
+    var registersExpense = true
+    var acceptsTerms = false
+
+    var isValid: Bool { petID != nil && acceptsTerms }
+
+    /// La póliza dura un año.
+    var endDate: Date {
+        Calendar.current.date(byAdding: .year, value: 1, to: startDate) ?? startDate
+    }
+}
+
 // MARK: - Aplicar drafts a los modelos
 
 extension PetRecord {

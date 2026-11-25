@@ -100,7 +100,7 @@ struct AuthView: View {
                     .softShadow(Theme.primary, opacity: 0.18, radius: 20, y: 10)
                 PawHeartLogo(size: 56)
             }
-            Text("PetCare")
+            Text("Psh Psh")
                 .font(.system(size: 36, weight: .heavy, design: .rounded))
                 .foregroundStyle(Theme.primaryGradient)
             Text("Salud, servicios y finanzas para tu mejor amigo.")

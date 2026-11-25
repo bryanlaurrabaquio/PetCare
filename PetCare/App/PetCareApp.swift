@@ -9,7 +9,8 @@ struct PetCareApp: App {
         do {
             container = try ModelContainer(
                 for: UserAccount.self, PetRecord.self, PetEvent.self,
-                Vaccine.self, Medication.self, Consultation.self, Expense.self
+                Vaccine.self, Medication.self, Consultation.self, Expense.self,
+                InsurancePolicy.self
             )
         } catch {
             // Si cambias los modelos y la app truena aquí, borra la app del simulador.

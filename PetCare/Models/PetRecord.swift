@@ -68,6 +68,9 @@ final class PetRecord {
     @Relationship(deleteRule: .cascade, inverse: \Expense.pet)
     var expenses: [Expense] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \InsurancePolicy.pet)
+    var policies: [InsurancePolicy] = []
+
     init(ownerID: UUID, name: String, species: Species, breed: String, sex: PetSex,
          birthDate: Date, weightKg: Double, microchip: String, photoData: Data?,
          cardStyle: PetCardStyle) {

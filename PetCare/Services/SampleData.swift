@@ -115,6 +115,7 @@ enum PreviewData {
             return try ModelContainer(
                 for: UserAccount.self, PetRecord.self, PetEvent.self,
                 Vaccine.self, Medication.self, Consultation.self, Expense.self,
+                InsurancePolicy.self,
                 configurations: ModelConfiguration(isStoredInMemoryOnly: true)
             )
         } catch {

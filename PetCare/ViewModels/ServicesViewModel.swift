@@ -10,6 +10,8 @@ final class ServicesViewModel {
     private(set) var bookingConfirmationMessage = ""
 
     let categories = ServiceCategory.allCases
+    /// Seguros para mascotas (vive dentro de Servicios).
+    let insurance: InsuranceViewModel
 
     private let store: PetCareStore
     private let catalog: [ServiceProvider]
@@ -18,6 +20,7 @@ final class ServicesViewModel {
     init(store: PetCareStore) {
         self.store = store
         self.catalog = ServiceCatalog.providers
+        self.insurance = InsuranceViewModel(store: store)
     }
 
     // MARK: - Datos de la vista

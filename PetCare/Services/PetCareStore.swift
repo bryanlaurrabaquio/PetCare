@@ -171,6 +171,57 @@ final class PetCareStore {
         save()
     }
 
+    // MARK: - Seguros
+
+    /// Pólizas de todas las mascotas del usuario, las más recientes primero.
+    var policies: [InsurancePolicy] {
+        pets.flatMap(\.policies).sorted { $0.startDate > $1.startDate }
+    }
+
+    @discardableResult
+    func addPolicy(_ draft: PolicyDraft) -> InsurancePolicy? {
+        guard let pet = self.pet(withID: draft.petID),
+              let company = InsuranceCatalog.company(withID: draft.companyID),
+              let plan = company.plan(withID: draft.planID) else { return nil }
+
+        let premium = plan.premium(for: draft.paymentFrequency)
+        let policy = InsurancePolicy(
+            policyNumber: Self.makePolicyNumber(prefix: company.policyPrefix, start: draft.startDate),
+            companyID: company.id,
+            planID: plan.id,
+            startDate: draft.startDate,
+            endDate: draft.endDate,
+            paymentFrequency: draft.paymentFrequency,
+            premium: premium
+        )
+        pet.policies.append(policy)
+
+        if draft.registersExpense {
+            let expense = Expense(amount: premium, category: .insurance, date: draft.startDate,
+                                  note: "\(company.name) · \(plan.name)")
+            pet.expenses.append(expense)
+        }
+        save()
+        return policy
+    }
+
+    func cancelPolicy(_ policy: InsurancePolicy) {
+        policy.isCancelled = true
+        save()
+    }
+
+    func deletePolicy(_ policy: InsurancePolicy) {
+        policy.pet?.policies.removeAll { $0.id == policy.id }
+        context.delete(policy)
+        save()
+    }
+
+    /// "HS-2026-483920"
+    private static func makePolicyNumber(prefix: String, start: Date) -> String {
+        let year = Calendar.current.component(.year, from: start)
+        return "\(prefix)-\(year)-\(Int.random(in: 100_000...999_999))"
+    }
+
     // MARK: - Privado
 
     private func save() {
