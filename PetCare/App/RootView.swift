@@ -6,6 +6,8 @@ struct RootView: View {
     @State private var session: SessionViewModel
     /// El carrusel de bienvenida solo se muestra la primera vez en este dispositivo.
     @AppStorage("hasSeenIntro") private var hasSeenIntro = false
+    /// Pantalla de carga con animales: aparece cada vez que se abre la app.
+    @State private var showsSplash = true
 
     init(container: ModelContainer) {
         _session = State(initialValue: SessionViewModel(context: container.mainContext))
@@ -47,6 +49,14 @@ struct RootView: View {
                         .id(store.user.id) // estado nuevo por cada usuario
                         .transition(.opacity)
                 }
+            }
+
+            if showsSplash {
+                SplashView {
+                    withAnimation(.easeOut(duration: 0.45)) { showsSplash = false }
+                }
+                .transition(.opacity)
+                .zIndex(1)
             }
         }
         .animation(.easeInOut(duration: 0.25), value: session.phase)

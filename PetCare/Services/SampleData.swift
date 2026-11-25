@@ -75,17 +75,26 @@ enum SampleData {
             (michi, 380, .food, -12, "Alimento húmedo"),
             (maxPet, 260, .medication, -15, "Desparasitante"),
             (luna, 349, .accessories, -18, "Correa nueva"),
-            (luna, 699, .insurance, -22, "Seguro mensual"),
+            (luna, 349, .insurance, -22, "Huellitas Seguros · Plus"),
             (michi, 210, .accessories, -27, "Arena"),
             (maxPet, 1_100, .veterinary, -35, "Consulta respiratoria"),
             (luna, 1_290, .food, -38, "Croquetas 15 kg"),
             (maxPet, 600, .services, -44, "Paseos (4 sesiones)"),
-            (luna, 699, .insurance, -52, "Seguro mensual")
+            (luna, 349, .insurance, -52, "Huellitas Seguros · Plus"),
+            (maxPet, 159, .insurance, -25, "PatitaSegura · Esencial")
         ]
         for (pet, amount, category, offset, note) in expenses {
             store.addExpense(ExpenseDraft(petID: pet.id, amountText: String(amount), category: category,
                                           date: day(offset, 12), note: note))
         }
+
+        // Seguros: Luna vigente, Max por vencer y Michi sin seguro.
+        store.addPolicy(PolicyDraft(petID: luna.id, companyID: "huellitas", planID: "huellitas-plus",
+                                    startDate: day(-200, 0), paymentFrequency: .monthly,
+                                    registersExpense: false, acceptsTerms: true))
+        store.addPolicy(PolicyDraft(petID: maxPet.id, companyID: "patita", planID: "patita-esencial",
+                                    startDate: day(-350, 0), paymentFrequency: .monthly,
+                                    registersExpense: false, acceptsTerms: true))
     }
 
     // MARK: - Helpers
