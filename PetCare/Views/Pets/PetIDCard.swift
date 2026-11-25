@@ -112,7 +112,7 @@ struct PetIDCard: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     vaccineBadge
-                    Text("ID PetCare · Escanea si me encuentras para contactar a mi familia")
+                    Text("ID Psh Psh · Escanea si me encuentras para contactar a mi familia")
                         .font(.footnote)
                         .opacity(0.9)
                         .fixedSize(horizontal: false, vertical: true)

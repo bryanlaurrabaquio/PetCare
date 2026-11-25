@@ -117,3 +117,33 @@ extension VaccineStatus {
         }
     }
 }
+
+extension CoverageKind {
+    var systemImage: String {
+        switch self {
+        case .consultations: "stethoscope"
+        case .emergencies: "cross.case.fill"
+        case .surgery: "bandage.fill"
+        case .hospitalization: "bed.double.fill"
+        case .labs: "testtube.2"
+        case .medications: "pills.fill"
+        case .vaccines: "syringe.fill"
+        case .telemedicine: "video.fill"
+        case .civilLiability: "person.2.fill"
+        case .theft: "magnifyingglass"
+        case .funeral: "leaf.fill"
+        }
+    }
+}
+
+extension PolicyStatus {
+    var tint: Color {
+        switch self {
+        case .scheduled: Theme.blue
+        case .active: Theme.green
+        case .expiringSoon: Color(hex: 0xC97A06) // ámbar oscuro: se lee bien sobre fondo claro
+        case .expired: Theme.red
+        case .cancelled: Theme.gray
+        }
+    }
+}

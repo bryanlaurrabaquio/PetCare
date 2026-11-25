@@ -65,6 +65,11 @@ enum AppFormatters {
         amount.formatted(.currency(code: "MXN").locale(locale))
     }
 
+    /// "$150,000" (sin centavos, para topes y sumas aseguradas)
+    static func wholeCurrency(_ amount: Double) -> String {
+        amount.formatted(.currency(code: "MXN").precision(.fractionLength(0)).locale(locale))
+    }
+
     private static func format(_ date: Date, _ pattern: String) -> String {
         let formatter = DateFormatter()
         formatter.locale = locale

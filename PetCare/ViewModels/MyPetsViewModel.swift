@@ -50,7 +50,7 @@ final class MyPetsViewModel {
     }
 
     func shareText(for pet: PetRecord) -> String {
-        "Conoce a \(pet.name) 🐾 \(pet.summaryText). ID PetCare: \(qrPayload(for: pet))"
+        "Conoce a \(pet.name) 🐾 \(pet.summaryText). ID Psh Psh: \(qrPayload(for: pet))"
     }
 
     // MARK: - Acciones
