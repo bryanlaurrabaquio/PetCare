@@ -4,12 +4,27 @@ import SwiftUI
 // los modelos no dependan de SwiftUI.
 
 extension PetCardStyle {
+    /// Color principal de la credencial (anillos, barras, acentos).
     var color: Color {
         switch self {
-        case .orange: Theme.primary
-        case .blue: Theme.blue
-        case .purple: Theme.purple
-        case .green: Theme.green
+        case .orange: Color(hex: 0xEE7A55)
+        case .blue: Color(hex: 0x5873F2)
+        case .purple: Theme.primary
+        case .green: Color(hex: 0x1FA77D)
+        }
+    }
+
+    /// Degradado de la credencial y del carnet.
+    var gradient: LinearGradient {
+        LinearGradient(colors: gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+
+    private var gradientColors: [Color] {
+        switch self {
+        case .orange: [Color(hex: 0xF7A374), Color(hex: 0xE8634A)]
+        case .blue: [Color(hex: 0x7BA4FF), Color(hex: 0x4B55E3)]
+        case .purple: [Color(hex: 0x9C6BFF), Color(hex: 0x632BD3)]
+        case .green: [Color(hex: 0x4AD3A0), Color(hex: 0x11926F)]
         }
     }
 }
@@ -41,8 +56,8 @@ extension EventKind {
         switch self {
         case .consultation: Theme.primary
         case .vaccine: Theme.green
-        case .medication: Theme.pink
-        case .grooming: Theme.purple
+        case .medication: Theme.orange
+        case .grooming: Theme.pink
         case .walk: Theme.teal
         case .daycare: Theme.blue
         case .other: Theme.gray
@@ -73,8 +88,8 @@ extension ExpenseCategory {
         switch self {
         case .veterinary: Theme.primary
         case .food: Theme.green
-        case .grooming: Theme.purple
-        case .medication: Theme.pink
+        case .grooming: Theme.pink
+        case .medication: Theme.orange
         case .accessories: Theme.blue
         case .insurance: Theme.teal
         case .services: Theme.yellow

@@ -9,7 +9,7 @@ enum SampleData {
         let luna = store.addPet(PetDraft(
             name: "Luna", species: .dog, breed: "Golden Retriever", sex: .female,
             birthDate: date(2022, 3, 12), weightKg: 28.4, microchip: "985 112 004",
-            photoData: photo("luna"), cardStyle: .orange
+            photoData: photo("luna"), cardStyle: .purple
         ))
         let maxPet = store.addPet(PetDraft(
             name: "Max", species: .dog, breed: "Bulldog francés", sex: .male,
@@ -19,7 +19,7 @@ enum SampleData {
         let michi = store.addPet(PetDraft(
             name: "Michi", species: .cat, breed: "Doméstico de pelo corto", sex: .male,
             birthDate: date(2023, 1, 20), weightKg: 4.6, microchip: "985 112 031",
-            photoData: photo("michi"), cardStyle: .purple
+            photoData: photo("michi"), cardStyle: .orange
         ))
 
         // Agenda

@@ -12,10 +12,10 @@ struct HomeHeader: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(greeting)
-                    .font(.subheadline)
+                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(Theme.textSecondary)
                 Text("¿Qué sigue para tus mascotas?")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundStyle(Theme.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -31,11 +31,18 @@ struct HomeHeader: View {
             } label: {
                 Text(initials)
                     .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Theme.primary)
-                    .frame(width: 44, height: 44)
-                    .background(Circle().fill(Theme.primarySoft))
+                    .foregroundStyle(.white)
+                    .frame(width: 46, height: 46)
+                    .background(Circle().fill(Theme.primaryGradient))
+                    .overlay(Circle().stroke(.white, lineWidth: 3))
+                    .softShadow(Theme.primary, opacity: 0.3, radius: 10, y: 5)
             }
             .accessibilityLabel("Perfil")
+        }
+        .background(alignment: .topTrailing) {
+            PawCluster(scale: 0.9)
+                .padding(.trailing, 50)
+                .offset(y: -14)
         }
     }
 
@@ -63,19 +70,20 @@ struct NextEventCard: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("PRÓXIMO EVENTO · \(AppFormatters.relativeDay(item.date).uppercased())")
-                        .font(.caption2.weight(.semibold))
+                        .font(.caption2.weight(.bold))
                         .tracking(1)
-                        .foregroundStyle(Theme.primary)
+                        .foregroundStyle(Color(hex: 0xFFD36B))
                     Text(item.headline)
-                        .font(.title3.weight(.bold))
+                        .font(.system(.title3, design: .rounded).weight(.bold))
                         .foregroundStyle(.white)
                 }
                 Spacer()
                 if let pet {
                     PetPhotoView(pet: pet)
-                        .frame(width: 44, height: 44)
+                        .frame(width: 54, height: 54)
                         .clipShape(Circle())
-                        .overlay(Circle().stroke(.white, lineWidth: 2))
+                        .overlay(Circle().stroke(.white, lineWidth: 3))
+                        .softShadow(.black, opacity: 0.25, radius: 8, y: 4)
                 }
             }
 
@@ -94,15 +102,37 @@ struct NextEventCard: View {
 
             HStack(spacing: 10) {
                 Button("Ver detalle", action: onDetail)
-                    .buttonStyle(FilledButtonStyle(background: Theme.primary))
+                    .buttonStyle(
+                        FilledButtonStyle(
+                            gradient: LinearGradient(colors: [Color(hex: 0xA97FFF), Color(hex: 0x8350F2)],
+                                                     startPoint: .topLeading, endPoint: .bottomTrailing),
+                            glow: Color(hex: 0x1E0A4A),
+                            height: 46
+                        )
+                    )
                 if let onReschedule {
                     Button("Reagendar", action: onReschedule)
-                        .buttonStyle(FilledButtonStyle(background: Theme.darkElevated))
+                        .buttonStyle(FilledButtonStyle(background: Color.white.opacity(0.16), height: 46))
                 }
             }
         }
         .padding(18)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.dark))
+        .background {
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Theme.heroGradient)
+                .overlay(alignment: .topTrailing) {
+                    Circle()
+                        .fill(.white.opacity(0.07))
+                        .frame(width: 170, height: 170)
+                        .offset(x: 60, y: -80)
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    PawWatermark(size: 96, opacity: 0.09)
+                        .offset(x: 10, y: 18)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        }
+        .softShadow(Theme.dark, opacity: 0.35, radius: 18, y: 10)
     }
 }
 
@@ -130,18 +160,18 @@ struct UpcomingEventRow: View {
             Spacer(minLength: 8)
 
             Text(AppFormatters.relativeDay(item.date))
-                .font(.caption.weight(.medium))
-                .foregroundStyle(Theme.textSecondary)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Theme.primary)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .background(Capsule().fill(Theme.chip))
+                .background(Capsule().fill(Theme.primarySoft))
 
             Image(systemName: "chevron.right")
                 .font(.footnote.weight(.semibold))
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(Theme.textSecondary.opacity(0.7))
         }
         .padding(14)
-        .cardBackground(cornerRadius: 18)
+        .cardBackground(cornerRadius: 20)
     }
 }
 
@@ -158,14 +188,14 @@ struct EventDetailSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     HStack(spacing: 14) {
-                        IconTile(systemImage: item.kind.systemImage, tint: item.kind.tint, size: 56, cornerRadius: 16)
+                        GradientIconTile(systemImage: item.kind.systemImage, tint: item.kind.tint, size: 58, cornerRadius: 18)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(item.kind.displayName.uppercased())
                                 .font(.caption2.weight(.semibold))
                                 .tracking(1)
                                 .foregroundStyle(item.kind.tint)
                             Text(item.title)
-                                .font(.title2.weight(.bold))
+                                .font(.system(.title2, design: .rounded).weight(.bold))
                                 .foregroundStyle(Theme.textPrimary)
                         }
                     }
@@ -185,14 +215,14 @@ struct EventDetailSheet: View {
                         }
                     }
                     .padding(16)
-                    .cardBackground()
+                    .cardBackground(cornerRadius: 22)
 
                     if let onEdit {
                         Button("Reagendar o editar") {
                             onEdit()
                             dismiss()
                         }
-                        .buttonStyle(FilledButtonStyle(background: Theme.primary))
+                        .buttonStyle(.primaryFilled)
                     }
 
                     if let onDelete {
@@ -206,7 +236,7 @@ struct EventDetailSheet: View {
                 }
                 .padding(20)
             }
-            .background(Theme.background)
+            .background(AppBackground())
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Listo") { dismiss() }

@@ -20,6 +20,7 @@ struct PetCareApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(container: container)
+                .preferredColorScheme(.light) // el diseño es claro (fondo lavanda)
         }
         .modelContainer(container)
     }

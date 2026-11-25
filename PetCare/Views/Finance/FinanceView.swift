@@ -9,7 +9,7 @@ struct FinanceView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                ScreenHeader(title: "Finanzas", subtitle: "Gastos de tus mascotas") {
+                ScreenHeader(title: "Finanzas", subtitle: "Controla y planea los gastos de su cuidado") {
                     CircleIconButton(systemImage: "plus", label: "Agregar gasto") {
                         isAddingExpense = true
                     }
@@ -51,7 +51,7 @@ struct FinanceView: View {
             .padding(.bottom, 24)
         }
         .scrollIndicators(.hidden)
-        .background(Theme.background)
+        .background(AppBackground())
         .sheet(isPresented: $isAddingExpense) {
             ExpenseFormView(pets: viewModel.pets, draft: viewModel.makeDraft()) { draft in
                 viewModel.addExpense(draft)
@@ -62,70 +62,103 @@ struct FinanceView: View {
     // MARK: - Resumen
 
     private var summaryCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(viewModel.summaryTitle)
-                .font(.caption2.weight(.semibold))
-                .tracking(1)
-                .foregroundStyle(Theme.primary)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(viewModel.summaryTitle)
+                        .font(.caption2.weight(.bold))
+                        .tracking(1)
+                        .foregroundStyle(Theme.primary)
 
-            Text(AppFormatters.currency(viewModel.currentMonthTotal))
-                .font(.system(size: 36, weight: .bold))
-                .foregroundStyle(.white)
-                .contentTransition(.numericText())
-
-            if let change = viewModel.monthChange {
-                Text(change.text)
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(change.isIncrease ? Color(hex: 0xFF8A65) : Color(hex: 0x7ED9A6))
+                    Text(AppFormatters.currency(viewModel.currentMonthTotal))
+                        .font(.system(size: 36, weight: .bold, design: .rounded))
+                        .foregroundStyle(Theme.textPrimary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .contentTransition(.numericText())
+                }
+                Spacer(minLength: 8)
+                GradientIconTile(systemImage: "creditcard.fill", tint: Theme.primary, size: 50, cornerRadius: 16)
             }
 
-            Rectangle()
-                .fill(.white.opacity(0.15))
-                .frame(height: 1)
-                .padding(.vertical, 4)
+            if let change = viewModel.monthChange {
+                let tint = change.isIncrease ? Theme.red : Theme.green
+                Text(change.text)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(tint)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(Capsule().fill(tint.opacity(0.12)))
+            }
+
+            Divider()
+                .overlay(Theme.stroke)
+                .padding(.vertical, 2)
 
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("En el año")
                         .font(.caption)
-                        .foregroundStyle(.white.opacity(0.6))
+                        .foregroundStyle(Theme.textSecondary)
                     Text(AppFormatters.currency(viewModel.yearTotal))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.white)
+                        .font(.subheadline.weight(.bold))
+                        .foregroundStyle(Theme.textPrimary)
                 }
                 Spacer()
                 Text(viewModel.summarySubtitle)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(.white.opacity(0.8))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.primary)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
-                    .background(Capsule().fill(Theme.darkElevated))
+                    .background(Capsule().fill(Theme.primarySoft))
             }
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.dark))
+        .background(alignment: .bottomTrailing) {
+            Image(systemName: "pawprint.fill")
+                .font(.system(size: 70))
+                .foregroundStyle(Theme.primary.opacity(0.05))
+                .rotationEffect(.degrees(-18))
+                .offset(x: -70, y: -6)
+                .accessibilityHidden(true)
+        }
+        .cardBackground(cornerRadius: 24)
     }
 
     // MARK: - Por categoría
 
     private var categoryCard: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Por categoría este mes")
-                .font(.headline)
+            Text("Gastos por categoría")
+                .font(.system(.headline, design: .rounded))
                 .foregroundStyle(Theme.textPrimary)
 
             HStack(alignment: .center, spacing: 18) {
-                Chart(viewModel.categoryTotals) { item in
-                    SectorMark(
-                        angle: .value("Monto", item.total),
-                        innerRadius: .ratio(0.62),
-                        angularInset: 1.5
-                    )
-                    .cornerRadius(4)
-                    .foregroundStyle(item.category.tint)
+                ZStack {
+                    Chart(viewModel.categoryTotals) { item in
+                        SectorMark(
+                            angle: .value("Monto", item.total),
+                            innerRadius: .ratio(0.66),
+                            angularInset: 2
+                        )
+                        .cornerRadius(5)
+                        .foregroundStyle(item.category.tint)
+                    }
+
+                    VStack(spacing: 0) {
+                        Text(AppFormatters.currency(viewModel.currentMonthTotal))
+                            .font(.system(.subheadline, design: .rounded).weight(.bold))
+                            .foregroundStyle(Theme.textPrimary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                        Text("Gastado")
+                            .font(.caption2)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    .frame(width: 76)
                 }
-                .frame(width: 120, height: 120)
+                .frame(width: 130, height: 130)
 
                 VStack(alignment: .leading, spacing: 10) {
                     ForEach(viewModel.categoryTotals.prefix(5)) { item in
@@ -146,8 +179,8 @@ struct FinanceView: View {
                 }
             }
         }
-        .padding(16)
-        .cardBackground()
+        .padding(18)
+        .cardBackground(cornerRadius: 24)
     }
 
     // MARK: - Por mascota
@@ -155,14 +188,15 @@ struct FinanceView: View {
     private var petTotalsCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Por mascota este mes")
-                .font(.headline)
+                .font(.system(.headline, design: .rounded))
                 .foregroundStyle(Theme.textPrimary)
 
             ForEach(viewModel.petTotals) { item in
                 HStack(spacing: 12) {
                     PetPhotoView(pet: item.pet)
-                        .frame(width: 36, height: 36)
+                        .frame(width: 40, height: 40)
                         .clipShape(Circle())
+                        .overlay(Circle().strokeBorder(item.pet.cardStyle.color.opacity(0.4), lineWidth: 2))
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
                             Text(item.pet.name)
@@ -173,14 +207,13 @@ struct FinanceView: View {
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(Theme.textPrimary)
                         }
-                        ProgressView(value: item.share)
-                            .tint(item.pet.cardStyle.color)
+                        GradientProgressBar(value: item.share, gradient: item.pet.cardStyle.gradient)
                     }
                 }
             }
         }
-        .padding(16)
-        .cardBackground()
+        .padding(18)
+        .cardBackground(cornerRadius: 24)
     }
 
     // MARK: - Movimientos
@@ -188,18 +221,19 @@ struct FinanceView: View {
     private func monthSection(_ section: ExpenseMonthSection) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text(section.title)
-                    .font(.subheadline.weight(.semibold))
+                Text(section.title.uppercased())
+                    .font(.caption.weight(.bold))
+                    .tracking(0.8)
                     .foregroundStyle(Theme.textSecondary)
                 Spacer()
                 Text(AppFormatters.currency(section.total))
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(Theme.primary)
             }
 
             VStack(spacing: 0) {
                 ForEach(Array(section.expenses.enumerated()), id: \.element.id) { index, expense in
-                    if index > 0 { Divider().padding(.leading, 70) }
+                    if index > 0 { Divider().overlay(Theme.stroke).padding(.leading, 72) }
                     ExpenseRow(
                         title: viewModel.title(for: expense),
                         subtitle: viewModel.subtitle(for: expense),
@@ -215,8 +249,30 @@ struct FinanceView: View {
                     }
                 }
             }
-            .cardBackground()
+            .cardBackground(cornerRadius: 22)
         }
+    }
+}
+
+/// Barra de progreso redondeada con degradado.
+struct GradientProgressBar: View {
+    let value: Double
+    var gradient: LinearGradient = Theme.primaryGradient
+    var height: CGFloat = 8
+
+    var body: some View {
+        Capsule()
+            .fill(Theme.chip)
+            .frame(height: height)
+            .overlay(alignment: .leading) {
+                GeometryReader { geometry in
+                    Capsule()
+                        .fill(gradient)
+                        .frame(width: max(height, geometry.size.width * min(max(value, 0), 1)))
+                }
+            }
+            .accessibilityElement()
+            .accessibilityValue(Text("\(Int((min(max(value, 0), 1) * 100).rounded()))%"))
     }
 }
 
@@ -240,7 +296,7 @@ struct ExpenseRow: View {
             }
             Spacer(minLength: 8)
             Text("-\(AppFormatters.currency(amount))")
-                .font(.subheadline.weight(.semibold))
+                .font(.system(.subheadline, design: .rounded).weight(.bold))
                 .foregroundStyle(Theme.textPrimary)
         }
         .padding(14)

@@ -17,6 +17,13 @@ Registro / inicio de sesión → alta de mascotas (paso obligatorio la primera v
 - **ViewModels/**: un ViewModel por pantalla.
 - **Views/**: Auth, Onboarding, Home, Services, Health, Finance, Pets y componentes compartidos.
 
+## Diseño
+- Paleta morada con fondo lavanda claro. Todos los colores, degradados y sombras viven en `Core/Theme.swift`.
+- Decoraciones (huellitas en los encabezados, logo de huella con corazón, fondo, ilustraciones) en `Views/Shared/Decorations.swift`.
+- Botón principal: `.buttonStyle(.primaryFilled)`; tarjetas: `.cardBackground()`; encabezados: `ScreenHeader(..., decoration: .paws | .heartPaw | .hidden)`.
+- Carrusel de bienvenida (`Views/Onboarding/IntroView.swift`): se muestra una sola vez antes del registro. Para verlo otra vez, borra la app del simulador.
+- La app usa siempre modo claro (`.preferredColorScheme(.light)` en `PetCareApp`).
+
 ## Privacidad de datos
 Cada mascota guarda el `ownerID` de su dueño y `PetCareStore` solo consulta las mascotas de ese usuario; los eventos, vacunas y gastos cuelgan de la mascota. Los datos viven en el dispositivo.
 Para cuentas en la nube (varios dispositivos), implementa `AuthService` con Firebase Auth y sincroniza con Firestore.

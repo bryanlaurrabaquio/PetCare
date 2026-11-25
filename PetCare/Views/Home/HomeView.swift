@@ -46,8 +46,9 @@ struct HomeView: View {
 
                     ForEach(viewModel.sections) { section in
                         VStack(alignment: .leading, spacing: 10) {
-                            Text(section.title)
-                                .font(.subheadline.weight(.semibold))
+                            Text(section.title.uppercased())
+                                .font(.caption.weight(.bold))
+                                .tracking(0.8)
                                 .foregroundStyle(Theme.textSecondary)
 
                             ForEach(section.items) { item in
@@ -76,7 +77,7 @@ struct HomeView: View {
             .padding(.bottom, 24)
         }
         .scrollIndicators(.hidden)
-        .background(Theme.background)
+        .background(AppBackground())
         .sheet(isPresented: $isAddingEvent) {
             EventFormView(
                 title: "Nuevo evento",

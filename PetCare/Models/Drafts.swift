@@ -12,7 +12,7 @@ struct PetDraft {
     var weightKg: Double = 0
     var microchip = ""
     var photoData: Data?
-    var cardStyle: PetCardStyle = .orange
+    var cardStyle: PetCardStyle = .purple
 
     var isValid: Bool { !name.trimmed.isEmpty }
 }

@@ -42,7 +42,7 @@ struct MyPetsView: View {
             .padding(.bottom, 24)
         }
         .scrollIndicators(.hidden)
-        .background(Theme.background)
+        .background(AppBackground())
         .sheet(item: $petForm) { form in
             PetFormView(viewModel: form)
         }
@@ -61,7 +61,7 @@ struct MyPetsView: View {
                     qrImage: isSelected ? viewModel.qrCode(for: pet) : nil,
                     collapsedHeight: collapsedHeight
                 )
-                .shadow(color: .black.opacity(0.10), radius: 10, x: 0, y: -2)
+                .softShadow(pet.cardStyle.color, opacity: 0.28, radius: 12, y: -2)
                 .zIndex(Double(index))
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -99,7 +99,7 @@ struct MyPetsView: View {
                 }
 
                 ShareLink(item: viewModel.shareText(for: pet)) {
-                    ActionChip(title: "Compartir", systemImage: "square.and.arrow.up", tint: Theme.textPrimary)
+                    ActionChip(title: "Compartir", systemImage: "square.and.arrow.up", tint: Theme.primary)
                 }
             }
             .buttonStyle(PressableButtonStyle())
@@ -110,7 +110,11 @@ struct MyPetsView: View {
                 Label("Editar datos de \(pet.name)", systemImage: "pencil")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.primary)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Capsule().fill(Theme.primarySoft))
             }
+            .buttonStyle(PressableButtonStyle())
         }
     }
 }
@@ -121,18 +125,21 @@ struct ActionChip: View {
     let tint: Color
 
     var body: some View {
-        HStack(spacing: 6) {
+        VStack(spacing: 6) {
             Image(systemName: systemImage)
+                .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(tint)
+                .frame(width: 34, height: 34)
+                .background(Circle().fill(tint.opacity(0.12)))
             Text(title)
+                .font(.footnote.weight(.semibold))
                 .foregroundStyle(Theme.textPrimary)
         }
-        .font(.subheadline.weight(.semibold))
         .lineLimit(1)
         .minimumScaleFactor(0.8)
         .frame(maxWidth: .infinity)
-        .frame(height: 48)
-        .cardBackground(cornerRadius: 14)
+        .padding(.vertical, 12)
+        .cardBackground(cornerRadius: 18)
     }
 }
 

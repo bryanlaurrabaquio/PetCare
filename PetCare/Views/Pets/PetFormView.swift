@@ -58,13 +58,19 @@ struct PetFormView: View {
                                 viewModel.draft.cardStyle = style
                             } label: {
                                 Circle()
-                                    .fill(style.color)
-                                    .frame(width: 36, height: 36)
+                                    .fill(style.gradient)
+                                    .frame(width: 38, height: 38)
                                     .overlay {
                                         if viewModel.draft.cardStyle == style {
                                             Image(systemName: "checkmark")
                                                 .font(.system(size: 14, weight: .bold))
                                                 .foregroundStyle(.white)
+                                        }
+                                    }
+                                    .padding(3)
+                                    .overlay {
+                                        if viewModel.draft.cardStyle == style {
+                                            Circle().strokeBorder(style.color.opacity(0.5), lineWidth: 2)
                                         }
                                     }
                             }
@@ -126,14 +132,17 @@ struct PetFormView: View {
                 )
                 .frame(width: 112, height: 112)
                 .clipShape(Circle())
-                .overlay(Circle().stroke(viewModel.draft.cardStyle.color, lineWidth: 3))
+                .padding(4)
+                .background(Circle().fill(.white))
+                .overlay(Circle().strokeBorder(viewModel.draft.cardStyle.gradient, lineWidth: 3))
+                .softShadow(viewModel.draft.cardStyle.color, opacity: 0.3, radius: 12, y: 6)
                 .overlay(alignment: .bottomTrailing) {
                     Image(systemName: "camera.fill")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
-                        .frame(width: 34, height: 34)
-                        .background(Circle().fill(Theme.primary))
-                        .overlay(Circle().stroke(.white, lineWidth: 2))
+                        .frame(width: 36, height: 36)
+                        .background(Circle().fill(Theme.primaryGradient))
+                        .overlay(Circle().stroke(.white, lineWidth: 3))
                 }
                 .overlay {
                     if viewModel.isLoadingPhoto { ProgressView() }

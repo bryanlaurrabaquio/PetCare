@@ -20,9 +20,25 @@ struct PetIDCard: View {
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .frame(height: isExpanded ? nil : collapsedHeight, alignment: .top)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous).fill(pet.cardStyle.color)
-        )
+        .background {
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .fill(pet.cardStyle.gradient)
+                .overlay(alignment: .topTrailing) {
+                    Circle()
+                        .fill(.white.opacity(0.10))
+                        .frame(width: 190, height: 190)
+                        .offset(x: 70, y: -100)
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    PawWatermark(size: 130, opacity: 0.10)
+                        .offset(x: 26, y: 26)
+                }
+                .overlay(alignment: .bottomLeading) {
+                    PawWatermark(size: 34, opacity: 0.08, angle: 24)
+                        .offset(x: 150, y: -22)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+        }
         .foregroundStyle(.white)
     }
 
@@ -30,17 +46,18 @@ struct PetIDCard: View {
 
     private var header: some View {
         HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .fill(.white)
-                .frame(width: 32, height: 32)
+                .frame(width: 36, height: 36)
                 .overlay {
                     Image(systemName: "pawprint.fill")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(pet.cardStyle.color)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(pet.cardStyle.gradient)
                 }
+                .softShadow(.black, opacity: 0.12, radius: 4, y: 2)
 
             Text(pet.name)
-                .font(.system(size: 24, weight: .bold))
+                .font(.system(size: 24, weight: .bold, design: .rounded))
                 .lineLimit(1)
 
             Spacer()
@@ -63,11 +80,12 @@ struct PetIDCard: View {
             HStack(alignment: .top, spacing: 16) {
                 PetPhotoView(pet: pet)
                     .frame(width: 124, height: 124)
-                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(.white, lineWidth: 2)
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .stroke(.white, lineWidth: 3)
                     )
+                    .softShadow(.black, opacity: 0.18, radius: 10, y: 6)
 
                 VStack(alignment: .leading, spacing: 10) {
                     InfoField(label: "RAZA", value: pet.breedText)
@@ -86,7 +104,7 @@ struct PetIDCard: View {
             }
 
             Rectangle()
-                .fill(.white.opacity(0.6))
+                .fill(.white.opacity(0.35))
                 .frame(height: 1)
 
             HStack(spacing: 14) {
@@ -117,9 +135,10 @@ struct PetIDCard: View {
                     .foregroundStyle(.black)
             }
         }
-        .padding(6)
-        .frame(width: 72, height: 72)
-        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(.white))
+        .padding(7)
+        .frame(width: 76, height: 76)
+        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(.white))
+        .softShadow(.black, opacity: 0.12, radius: 6, y: 3)
         .accessibilityLabel("Código QR de \(pet.name)")
     }
 

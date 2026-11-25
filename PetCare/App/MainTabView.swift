@@ -17,8 +17,8 @@ enum AppTab: CaseIterable, Hashable {
         switch self {
         case .home: "house"
         case .services: "stethoscope"
-        case .health: "heart.text.square"
-        case .finance: "creditcard"
+        case .health: "heart"
+        case .finance: "chart.bar"
         case .pets: "pawprint"
         }
     }
@@ -47,7 +47,7 @@ struct MainTabView: View {
 
     var body: some View {
         ZStack {
-            Theme.background.ignoresSafeArea()
+            Theme.background.ignoresSafeArea() // cada pantalla dibuja su propio AppBackground
 
             switch selectedTab {
             case .home:

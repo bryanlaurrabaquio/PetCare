@@ -13,7 +13,11 @@ struct HealthView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                ScreenHeader(title: "Salud", subtitle: "Carnet de salud")
+                ScreenHeader(
+                    title: "Salud",
+                    subtitle: "Controla el bienestar y la historia clínica de tus mascotas",
+                    decoration: .heartPaw
+                )
 
                 PetFilterBar(
                     pets: viewModel.pets,
@@ -46,7 +50,7 @@ struct HealthView: View {
             .padding(.bottom, 24)
         }
         .scrollIndicators(.hidden)
-        .background(Theme.background)
+        .background(AppBackground())
         .sheet(item: $activeForm) { form in
             let petName = viewModel.selectedPet?.name ?? ""
             switch form {
@@ -139,63 +143,102 @@ struct HealthCardHeader: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 14) {
-                VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .center, spacing: 14) {
+                PetPhotoView(pet: pet)
+                    .frame(width: 76, height: 76)
+                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                            .stroke(.white, lineWidth: 3)
+                    )
+                    .softShadow(pet.cardStyle.color, opacity: 0.30, radius: 10, y: 5)
+
+                VStack(alignment: .leading, spacing: 3) {
                     Text("CARNET DE SALUD")
                         .font(.caption2.weight(.bold))
                         .tracking(1.2)
-                        .opacity(0.85)
+                        .foregroundStyle(pet.cardStyle.color)
                     Text(pet.name)
-                        .font(.system(size: 28, weight: .bold))
-                    Text("\(pet.summaryText) · \(pet.weightText)")
+                        .font(.system(size: 26, weight: .bold, design: .rounded))
+                        .foregroundStyle(Theme.textPrimary)
+                        .lineLimit(1)
+                    Text(pet.summaryText)
                         .font(.subheadline)
-                        .opacity(0.9)
+                        .foregroundStyle(Theme.textSecondary)
+                        .lineLimit(1)
                 }
-                Spacer()
-                PetPhotoView(pet: pet)
-                    .frame(width: 68, height: 68)
-                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(.white, lineWidth: 2))
+                Spacer(minLength: 0)
             }
 
-            let status = pet.vaccineStatus
-            HStack(spacing: 4) {
-                Image(systemName: status.systemImage)
-                    .font(.caption2.weight(.bold))
-                Text(status.text)
+            HStack(spacing: 8) {
+                let status = pet.vaccineStatus
+                chip(text: status.text, systemImage: "\(status.systemImage).circle.fill", tint: status.tint)
+                chip(text: pet.weightText, systemImage: "scalemass.fill", tint: Theme.primary)
             }
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(status.tint)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
-            .background(Capsule().fill(.white))
 
-            Rectangle()
-                .fill(.white.opacity(0.5))
-                .frame(height: 1)
-
-            HStack {
-                stat(value: vaccineCount, label: "VACUNAS")
-                Spacer()
-                stat(value: activeMedications, label: "MED. ACTIVOS")
-                Spacer()
-                stat(value: consultationCount, label: "CONSULTAS")
+            HStack(spacing: 10) {
+                stat(value: vaccineCount, label: "Vacunas", systemImage: "syringe", tint: Theme.green)
+                stat(value: activeMedications, label: "Med. activos", systemImage: "pills", tint: Theme.orange)
+                stat(value: consultationCount, label: "Consultas", systemImage: "stethoscope", tint: Theme.primary)
             }
         }
         .padding(18)
-        .foregroundStyle(.white)
-        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(pet.cardStyle.color))
+        .background {
+            ZStack(alignment: .topTrailing) {
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(Theme.surface)
+                    .shadow(color: Theme.shadow.opacity(0.08), radius: 16, x: 0, y: 8)
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(pet.cardStyle.gradient)
+                    .opacity(0.10)
+                    .mask {
+                        LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .center)
+                    }
+                Image(systemName: "pawprint.fill")
+                    .font(.system(size: 64))
+                    .foregroundStyle(pet.cardStyle.color.opacity(0.10))
+                    .rotationEffect(.degrees(-18))
+                    .offset(x: -16, y: 14)
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .strokeBorder(Theme.stroke, lineWidth: 1)
+            }
+        }
     }
 
-    private func stat(value: Int, label: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
+    private func chip(text: String, systemImage: String, tint: Color) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: systemImage)
+                .font(.caption.weight(.bold))
+            Text(text)
+                .lineLimit(1)
+        }
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(tint)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Capsule().fill(tint.opacity(0.12)))
+    }
+
+    private func stat(value: Int, label: String, systemImage: String, tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Image(systemName: systemImage)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(tint)
             Text("\(value)")
-                .font(.title3.weight(.bold))
+                .font(.system(.title3, design: .rounded).weight(.bold))
+                .foregroundStyle(Theme.textPrimary)
             Text(label)
                 .font(.caption2.weight(.semibold))
-                .tracking(0.8)
-                .opacity(0.8)
+                .foregroundStyle(Theme.textSecondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Theme.field)
+        )
     }
 }
 
@@ -222,33 +265,35 @@ struct CarnetSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 12) {
-                IconTile(systemImage: systemImage, tint: tint, size: 36, cornerRadius: 10)
+                IconTile(systemImage: systemImage, tint: tint, size: 38, cornerRadius: 12)
                 Text(title)
-                    .font(.headline)
+                    .font(.system(.headline, design: .rounded))
                     .foregroundStyle(Theme.textPrimary)
                 Text("\(count)")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(Theme.primary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(Capsule().fill(Theme.chip))
+                    .background(Capsule().fill(Theme.primarySoft))
                 Spacer()
                 Button(action: onAdd) {
                     Image(systemName: "plus")
                         .font(.subheadline.weight(.bold))
-                        .foregroundStyle(tint)
+                        .foregroundStyle(.white)
                         .frame(width: 32, height: 32)
-                        .background(Circle().fill(tint.opacity(0.14)))
+                        .background(Circle().fill(Theme.primaryGradient))
+                        .softShadow(Theme.primary, opacity: 0.3, radius: 6, y: 3)
                 }
                 .accessibilityLabel(Text("Agregar en \(title)"))
             }
             .padding(16)
 
             Divider()
+                .overlay(Theme.stroke)
 
             content
         }
-        .cardBackground()
+        .cardBackground(cornerRadius: 22)
     }
 }
 
