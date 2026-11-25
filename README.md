@@ -2,14 +2,17 @@
 
 Requisitos: Xcode 16 o superior, iOS 17 como versión mínima.
 
-## Cómo agregarlo al proyecto
-1. En Xcode, borra del proyecto las carpetas de la versión anterior (`App`, `Core`, `Models`, `Services`, `ViewModels`, `Views`) → "Move to Trash".
-2. Arrastra las carpetas de este zip al proyecto ("Copy items if needed").
-3. Borra la app del simulador (mantén presionado el ícono → Eliminar app) para empezar con la base de datos limpia.
-4. ⌘⇧K y luego ⌘R.
+## Cómo abrirlo
+1. Clona el repo: `git clone https://github.com/bryanlaurrabaquio/PetCare.git`
+2. Abre **`PetCare.xcodeproj`** (doble clic, o en Xcode: File → Open… → `PetCare.xcodeproj`). No abras la carpeta sola.
+3. Arriba elige un simulador de iPhone y presiona ▶️ (⌘R).
+4. Para correrlo en tu iPhone: proyecto PetCare → target PetCare → Signing & Capabilities → elige tu Team.
+
+El proyecto usa carpetas sincronizadas (Xcode 16): cualquier archivo que agregues dentro de `PetCare/` entra solo al proyecto.
+Las fotos de demo (`luna`, `max`, `michi`) se buscan en `PetCare/Assets.xcassets`; si no están, se muestra el ícono de la especie.
 
 ## Flujo
-Registro / inicio de sesión → alta de mascotas (paso obligatorio la primera vez) → app con 5 pestañas.
+Bienvenida (solo la primera vez) → registro / inicio de sesión → alta de mascotas (paso obligatorio la primera vez) → app con 5 pestañas.
 
 ## Estructura
 - **Models/**: modelos de SwiftData (`UserAccount`, `PetRecord`, `PetEvent`, `Vaccine`, `Medication`, `Consultation`, `Expense`) y "drafts" para formularios.
