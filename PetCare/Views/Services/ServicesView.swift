@@ -4,6 +4,7 @@ import SwiftUI
 struct ServicesView: View {
     @Bindable var viewModel: ServicesViewModel
     @State private var selectedProvider: ServiceProvider?
+    @State private var isShowingInsurance = false
 
     var body: some View {
         ScrollView {
@@ -11,6 +12,13 @@ struct ServicesView: View {
                 ScreenHeader(title: "Servicios", subtitle: "Encuentra todo lo que tu mascota necesita")
 
                 SearchBar(text: $viewModel.searchText, placeholder: "Buscar veterinarios, estéticas, paseos...")
+
+                InsuranceSummaryCard(
+                    summary: viewModel.insurance.summaryText,
+                    activeCount: viewModel.insurance.activePolicyCount
+                ) {
+                    isShowingInsurance = true
+                }
 
                 VStack(alignment: .leading, spacing: 14) {
                     SectionHeader(title: "Categorías")
@@ -64,6 +72,9 @@ struct ServicesView: View {
             ) { draft in
                 viewModel.book(provider, with: draft)
             }
+        }
+        .sheet(isPresented: $isShowingInsurance) {
+            InsuranceHubView(viewModel: viewModel.insurance)
         }
         .alert("¡Listo!", isPresented: $viewModel.showsBookingConfirmation) {
             Button("OK", role: .cancel) {}
